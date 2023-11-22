@@ -1,9 +1,11 @@
 "use client";
 import { ReactNode } from "react";
+
 import Sidebar from "./sidebar";
 import Header from "./header";
 import HeaderMobile from "./headerMobile";
 import MarginWidthWrapper from "./marginWidthWrapper";
+import { Footer } from "./footer";
 
 export default function PageWrapper({ children }: { children: ReactNode }) {
   return (
@@ -14,9 +16,10 @@ export default function PageWrapper({ children }: { children: ReactNode }) {
           <MarginWidthWrapper>
             <Header />
             <HeaderMobile />
-            <div className="flex flex-col pt-2 px-4 space-y-2 bg-zinc-100 flex-grow pb-4">
+            <div className="flex flex-col flex-grow pt-2 pb-4 px-4 space-y-2">
               {children}
             </div>
+            <Footer />
           </MarginWidthWrapper>
         </main>
       </div>

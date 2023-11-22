@@ -1,11 +1,11 @@
 import PageWrapper from "@/components/pageWrapper";
 
-const HelpPage = () => {
+const FAQPage = () => {
   return (
     <PageWrapper>
-      <div>Help Page</div>
+      <div>Test FAQPage</div>
     </PageWrapper>
   );
 };
 
-export default HelpPage;
+export default FAQPage;
