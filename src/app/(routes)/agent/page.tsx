@@ -1,5 +1,6 @@
+import { Suspense } from "react";
+
 import PageWrapper from "@/components/pageWrapper";
-import React, { Suspense } from "react";
 import AgentList from "./components/AgentList";
 import Loading from "./components/loading";
 

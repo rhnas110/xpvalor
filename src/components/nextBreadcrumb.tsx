@@ -1,12 +1,12 @@
 "use client";
-
-import React, { ReactNode } from "react";
+import { Fragment, ReactNode } from "react";
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { IoHome } from "react-icons/io5";
 
 type TBreadCrumbProps = {
-  homeElement: ReactNode;
+  homeElement?: ReactNode;
   separator: ReactNode;
   containerClasses?: string;
   listClasses?: string;
@@ -34,7 +34,7 @@ const NextBreadcrumb = ({
     <div>
       <ul className={containerClasses}>
         <li className={listClasses}>
-          <Link href={"/"}>{homeElement}</Link>
+          <Link href={"/"}>{homeElement ? homeElement : <IoHome size={24}/>}</Link>
         </li>
         {pathNames.length > 0 && separator}
         {pathNames.map((link, index) => {
@@ -45,12 +45,12 @@ const NextBreadcrumb = ({
             ? link[0].toUpperCase() + link.slice(1, link.length)
             : link;
           return (
-            <React.Fragment key={index}>
+            <Fragment key={index}>
               <li className={itemClasses}>
                 <Link href={href}>{itemLink}</Link>
               </li>
               {pathNames.length !== index + 1 && separator}
-            </React.Fragment>
+            </Fragment>
           );
         })}
       </ul>

@@ -1,23 +1,19 @@
 import { IoHome } from "react-icons/io5";
-import { FaProjectDiagram, FaMagento } from "react-icons/fa";
-import { FaQuestionCircle } from "react-icons/fa";
+import { FaMagento, FaQuestionCircle } from "react-icons/fa";
+import { AiOutlineTransaction } from "react-icons/ai";
+
 import { SideNavItem } from "@/types/sidebarType";
 
 export const SIDENAV_ITEMS: SideNavItem[] = [
   {
-    title: "Home",
+    title: "Discover",
     path: "/",
     icon: <IoHome size={24} />,
   },
   {
-    title: "Project",
-    path: "/project",
-    icon: <FaProjectDiagram size={24} />,
-    submenu: true,
-    subMenuItems: [
-      { title: "All", path: "/project" },
-      { title: "Web Design", path: "/project/web-design" },
-    ],
+    title: "Topup",
+    path: "/topup",
+    icon: <AiOutlineTransaction size={24} />,
   },
   {
     title: "Agent",
@@ -28,5 +24,16 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     title: "Help",
     path: "/help",
     icon: <FaQuestionCircle size={24} />,
+    submenu: true,
+    subMenuItems: [
+      {
+        title: "Help",
+        path: "/help",
+      },
+      {
+        title: "FAQ",
+        path: "/help/faq",
+      },
+    ],
   },
 ];
