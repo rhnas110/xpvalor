@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { SIDENAV_ITEMS } from "@/constants";
 import { FaChevronDown } from "react-icons/fa6";
 import { SideNavItem } from "@/types/sidebarType";
-import Logo from "./logo";
+import { Logo } from "./logo";
 
 const Sidebar = () => {
   return (

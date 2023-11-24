@@ -15,7 +15,6 @@ export default function PageWrapper({ children }: { children: ReactNode }) {
         <main className="flex-1 overflow-x-hidden">
           <MarginWidthWrapper>
             <Header />
-            <HeaderMobile />
             <div className="flex flex-col flex-grow pt-2 pb-4 px-4 space-y-2">
               {children}
             </div>
