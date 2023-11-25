@@ -8,8 +8,6 @@ import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { signUp } from "@/app/actions/users/signUp";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
 import { toastError, toastSuccess } from "@/lib/toast";
 
 const registerSchema = z
@@ -41,7 +39,6 @@ const RegisterForm = () => {
     resolver: zodResolver(registerSchema),
   });
   const router = useRouter();
-  const { status } = useSession();
 
   const onSubmit: SubmitHandler<RegisterSchema> = async (data) => {
     try {
@@ -56,13 +53,6 @@ const RegisterForm = () => {
       return toastError(error?.message);
     }
   };
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.refresh();
-      router.push("/");
-    }
-  }, [status, router]);
   return (
     <>
       <h1 className="pb-12 text-2xl font-bold text-center">

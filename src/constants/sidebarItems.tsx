@@ -15,25 +15,25 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     path: "/topup",
     icon: <AiOutlineTransaction size={24} />,
   },
-  {
-    title: "Agent",
-    path: "/agent",
-    icon: <FaMagento size={24} />,
-  },
-  {
-    title: "Help",
-    path: "/help",
-    icon: <FaQuestionCircle size={24} />,
-    submenu: true,
-    subMenuItems: [
-      {
-        title: "Help",
-        path: "/help",
-      },
-      {
-        title: "FAQ",
-        path: "/help/faq",
-      },
-    ],
-  },
+  // {
+  //   title: "Agent",
+  //   path: "/agent",
+  //   icon: <FaMagento size={24} />,
+  // },
+  // {
+  //   title: "Help",
+  //   path: "/help",
+  //   icon: <FaQuestionCircle size={24} />,
+  //   submenu: true,
+  //   subMenuItems: [
+  //     {
+  //       title: "Help",
+  //       path: "/help",
+  //     },
+  //     {
+  //       title: "FAQ",
+  //       path: "/help/faq",
+  //     },
+  //   ],
+  // },
 ];

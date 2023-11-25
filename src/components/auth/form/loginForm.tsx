@@ -7,9 +7,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { toastError, toastSuccess } from "@/lib/toast";
 
 const loginSchema = z.object({
@@ -28,11 +27,11 @@ const LoginForm = () => {
     register: login,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
   });
   const router = useRouter();
-  const { status } = useSession();
 
   const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
     try {
@@ -45,20 +44,14 @@ const LoginForm = () => {
         return toastError("Email or Password is Incorrect");
       } else {
         router.refresh();
-        return toastSuccess("Login Success");
+        toastSuccess("Login Success");
+        reset();
+        return router.push("/");
       }
     } catch (error) {
-      console.log(error);
       return toastError(error?.message);
     }
   };
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.refresh();
-      router.push("/");
-    }
-  }, [status, router]);
   return (
     <>
       <h1 className="pb-12 text-2xl font-bold text-center">
