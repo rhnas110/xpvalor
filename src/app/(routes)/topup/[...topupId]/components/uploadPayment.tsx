@@ -3,6 +3,9 @@ import { useState } from "react";
 
 import ButtonPrimary from "@/components/button";
 import { minimizeString } from "@/lib/utils";
+import axios from "axios";
+import { toastError, toastSuccess } from "@/lib/toast";
+import { useRouter } from "next/navigation";
 
 const styles = {
   dropContainer: {
@@ -18,21 +21,61 @@ const styles = {
   },
 };
 
-const UploadPayment = () => {
+const UploadPayment = ({ token, id }) => {
+  const router = useRouter();
   const [picture, setPicture] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSelectPicture = (e) => {
+  const handleSelectPicture = (e: any) => {
     setPicture(e.target.files[0]);
+  };
+  const handleUpload = async () => {
+    if (!picture) {
+      return toastError("Select Picture First");
+    }
+    if (picture?.size > 1024000) {
+      return toastError("Picture Size Too Large, maximum 1MB.");
+    }
+
+    try {
+      setLoading(true);
+
+      const data = new FormData();
+      data.append("picture", picture);
+
+      const response = (
+        await axios.patch(
+          process.env.API_BASE_URL + `/topup/upload_payment/${id}`,
+          data,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+      ).data;
+      if (response?.success) {
+        toastSuccess("Upload Payment Success");
+        setPicture("");
+        return setTimeout(() => {
+          router.refresh();
+        }, 1500);
+      }
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div>
       <form encType="multipart/form-data">
-        <label htmlFor="payment" style={styles.dropContainer}>
+        <label htmlFor="picture" style={styles.dropContainer}>
           <input
             type="file"
             accept=".png, .jpg, .jpeg"
-            name="payment"
-            id="payment"
+            name="picture"
+            id="picture"
             onChange={(e) => handleSelectPicture(e)}
             hidden={picture ? true : false}
             className="w-20 sm:w-full lg:w-auto"
@@ -52,7 +95,15 @@ const UploadPayment = () => {
         </label>
       </form>
       <div className="mt-4 md:mb-6">
-        <ButtonPrimary text="Submit" className="w-32 ml-auto" />
+        <ButtonPrimary
+          text={loading ? "Loading ..." : "Submit"}
+          onClick={() => handleUpload()}
+          loading={loading ? 1 : 0}
+          disabled={loading}
+          className={`${
+            loading ? "cursor-not-allowed opacity-75" : ""
+          } w-32 ml-auto`}
+        />
       </div>
     </div>
   );

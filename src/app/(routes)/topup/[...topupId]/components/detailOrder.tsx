@@ -1,4 +1,15 @@
-const DetailOrder = ({ topupId }) => {
+"use client";
+import { rupiah } from "@/lib/currency";
+import { minimizeString } from "@/lib/utils";
+import { useState } from "react";
+
+const DetailOrder = ({ detailOrder }: { detailOrder: any }) => {
+  const [isVisible, setIsVisible] = useState(true);
+  function handleIsVisible() {
+    setIsVisible(!isVisible);
+  }
+  const { Point, Amount, Total, Price, RiotID, id, status, email } =
+    detailOrder;
   return (
     <>
       <div className="overflow-auto">
@@ -39,20 +50,20 @@ const DetailOrder = ({ topupId }) => {
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
             <tr>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                XPValor#1234
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-800 dark:text-gray-200">
+                {RiotID}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                4000
+                {Point}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                Rp. 400.000
+                {rupiah(Price)}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-end text-sm font-medium">
-                3
+                {Amount}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-end text-sm font-medium">
-                Rp. 1.200.000
+                {rupiah(Total)}
               </td>
             </tr>
           </tbody>
@@ -62,12 +73,23 @@ const DetailOrder = ({ topupId }) => {
 
       <div className="bg-[#1B1818] px-2 sm:px-4 py-4 sm:py-2 flex sm:flex-row flex-col gap-y-2 justify-between">
         <div>
-          <p>Order ID: {topupId}</p>
-          <p>EMAIL</p>
+          <p>Order ID: {id}</p>
+          <p>
+            Status:&nbsp;
+            <span className={`${status === 2 && "text-logo font-medium"}`}>
+              {status === 1 ? "Waiting Payment" : "Finished"}
+            </span>
+          </p>
+          <div className="flex gap-x-2">
+            <p>Email: {isVisible ? minimizeString(email, 3) : email}</p>
+            <p onClick={handleIsVisible} className="opacity-80 cursor-pointer">
+              {isVisible ? "Show" : "Hide"}
+            </p>
+          </div>
         </div>
         <div>
           <p>Order Total</p>
-          <p>Rp. 1.200.000</p>
+          <p> {rupiah(Total)}</p>
         </div>
       </div>
     </>

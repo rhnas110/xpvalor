@@ -15,14 +15,18 @@ import valorant_points from "@/assets/valorant-points.png";
 import bank_icon from "@/assets/svg/bank-svg.svg";
 import gopay_icon from "@/assets/svg/gopay-svg.svg";
 import qris_icon from "@/assets/svg/qris-svg.svg";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { toastError } from "@/lib/toast";
 
-const TopupForm = () => {
+const TopupForm = ({ token }: { token: any }) => {
   const { data: session } = useSession();
-
+  const router = useRouter();
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     defaultValues: {
       amount: "",
@@ -31,36 +35,80 @@ const TopupForm = () => {
       payment: "",
     },
   });
-  const [totalAmount, setTotalAmount] = useState({ price: 0, amount: 0 });
-  const rp = totalAmount.price * totalAmount.amount;
-  const onSubmit = (data: any) => {
-    const swalResponse = Swal.fire({
-      title: "Confirm Your Order",
-      text: `${data.riotId}●${rupiah(rp)}●${data.payment}`,
-      icon: "info",
-      showCancelButton: true,
-      confirmButtonColor: "#221e1e",
-      cancelButtonColor: "#fd4556",
-      confirmButtonText: "Confirm",
-    }).then((result) => {
-      console.log(result);
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: "Success",
-          text: "Order success, please pay immediately!",
-          icon: "success",
-        });
-      }
-    });
-    console.log(swalResponse, "SWAL");
-    console.log(data, "DATA");
+  const [totalAmount, setTotalAmount] = useState({
+    price: 0,
+    amount: 0,
+    point: 0,
+  });
+  const [loading, setLoading] = useState(false);
+  const rp =
+    totalAmount.amount >= 0 ? totalAmount.price * totalAmount.amount : 0;
+
+  // DO CREATE TRANSACTION OR TOPUP
+  const onSubmit = async (data: any) => {
+    if (!totalAmount.point) {
+      return toastError("Select Valorant Point first");
+    }
+    if (!data.total) {
+      return toastError("Minimum purchase amount 1");
+    }
+    if (!data.riotId) {
+      return toastError("Riot ID can't be empty");
+    }
+    if (!data.payment) {
+      return toastError("Select your payment");
+    }
+
+    try {
+      setLoading(true);
+      const swalResponse = Swal.fire({
+        title: "Confirm Your Order",
+        text: `${data.riotId}●${rupiah(rp)}●${data.payment}`,
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#221e1e",
+        cancelButtonColor: "#fd4556",
+        confirmButtonText: "Confirm",
+      }).then(async (result) => {
+        const dataTopup = {
+          Point: totalAmount.point,
+          Amount: data.total,
+          Price: totalAmount.price,
+          RiotID: data.riotId,
+        };
+
+        if (result.isConfirmed) {
+          const response = (
+            await axios.post(process.env.API_BASE_URL + "/topup", dataTopup, {
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            })
+          ).data;
+          if (response.success) {
+            Swal.fire({
+              title: "Success",
+              text: "Order success, please pay immediately!",
+              icon: "success",
+            });
+            reset();
+            return router.push(`/topup/${response.data.t_id}`);
+          }
+        }
+      });
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <BoxWithStep
         className="mb-8"
         step_number="1"
-        step_title="Select Top Up Amount"
+        step_title="Select Top Up Valorant Point"
       >
         <div className="px-2 flex gap-4 flex-wrap sm:justify-normal justify-center">
           {points?.map(
@@ -73,7 +121,9 @@ const TopupForm = () => {
                     className="hidden peer"
                     value={`${point}, ${price}`}
                     {...register("amount")}
-                    onChange={() => setTotalAmount({ ...totalAmount, price })}
+                    onChange={() =>
+                      setTotalAmount({ ...totalAmount, price, point })
+                    }
                   />
                   <label
                     htmlFor={"point" + point}
@@ -237,7 +287,15 @@ const TopupForm = () => {
 
       <div>
         {session?.user?.email ? (
-          <ButtonPrimary text="Order Now" type="submit" />
+          <ButtonPrimary
+            text={loading ? "Loading ..." : "Order Now"}
+            type="submit"
+            loading={loading ? 1 : 0}
+            disabled={loading}
+            className={`${
+              loading ? "cursor-not-allowed opacity-75" : ""
+            } w-full`}
+          />
         ) : (
           <div className="text-right">
             <p>

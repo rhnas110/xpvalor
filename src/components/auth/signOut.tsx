@@ -5,7 +5,7 @@ import { signOut } from "next-auth/react";
 const SignOut = ({ className }: { className?: string }) => {
   const c = className;
   function handleSignOut() {
-    signOut({ callbackUrl: "/", redirect: false });
+    signOut({ callbackUrl: "/", redirect: true });
     return toastSuccess("Sign Out Success");
   }
   return (

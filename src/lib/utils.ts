@@ -41,3 +41,16 @@ export const minimizeString = (str: string, num: number): string => {
   if (str?.length > num) return str.slice(0, num) + "...";
   return str;
 };
+
+export function beautyDate(date?: any) {
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+  const formattedDate = formatter.format(Date.parse(date));
+  return formattedDate;
+}

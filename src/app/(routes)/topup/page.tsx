@@ -3,8 +3,10 @@ import Link from "next/link";
 import PageWrapper from "@/components/pageWrapper";
 import Banner from "./components/banner";
 import TopupForm from "./components/form/topupForm";
+import { getTokenFromCookies } from "@/lib/cookies";
 
 const TopupPage = () => {
+  const token = getTokenFromCookies();
   return (
     <PageWrapper className="px-0">
       <Banner />
@@ -33,7 +35,7 @@ const TopupPage = () => {
           </ol>
         </div>
         <div>
-          <TopupForm />
+          <TopupForm token={token} />
         </div>
       </div>
     </PageWrapper>
